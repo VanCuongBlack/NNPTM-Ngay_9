@@ -1,47 +1,57 @@
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+let mongoose = require('mongoose')
 
-const app = express();
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 
-// Middleware
+var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/messaging_app', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+app.use('/', indexRouter);
+app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/categories', require('./routes/categories'));
+app.use('/api/v1/products', require('./routes/products'));
+app.use('/api/v1/roles', require('./routes/roles'));
+app.use('/api/v1/auth', require('./routes/auth'));
+app.use('/api/v1/carts', require('./routes/carts'));
+app.use('/api/v1/upload', require('./routes/uploads'));
+app.use('/api/v1/messages', require('./routes/messages'));
+
+mongoose.connect('mongodb://localhost:27017/NNPTUD-S3');
+mongoose.connection.on('connected', function () {
+  console.log("connected");
 })
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.log('MongoDB connection error:', err));
+mongoose.connection.on('disconnected', function () {
+  console.log("disconnected");
+})
 
-// Auth Middleware (example - adjust based on your auth system)
-// This middleware should set req.user or req.userId
-app.use((req, res, next) => {
-  // Example: Get user ID from headers, JWT token, or session
-  // For testing, you should pass userId in headers: X-User-Id
-  req.user = {
-    _id: req.headers['x-user-id'] || req.userId
-  };
-  next();
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
 });
 
-// Routes
-const messageRouter = require('./routes/messageRouter');
-app.use('/api/messages', messageRouter);
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Something went wrong',
-    error: err.message
-  });
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app;

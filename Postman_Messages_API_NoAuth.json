@@ -1,0 +1,233 @@
+{
+  "info": {
+    "_postman_id": "messages-api-collection",
+    "name": "Messages API (No Auth)",
+    "description": "Collection for Messages API - Buoi9 - Không cần Token",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "SETUP 1. REGISTER - User 1",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"user001\",\n  \"password\": \"Test@1234\",\n  \"email\": \"user001@gmail.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "register"
+          ]
+        },
+        "description": "Tạo user 1 - Thay username/email nếu có conflict"
+      },
+      "response": []
+    },
+    {
+      "name": "SETUP 2. REGISTER - User 2",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"user002\",\n  \"password\": \"Test@1234\",\n  \"email\": \"user002@gmail.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "register"
+          ]
+        },
+        "description": "Tạo user 2 - Thay username/email nếu có conflict"
+      },
+      "response": []
+    },
+    {
+      "name": "0. GET - List Users (copy ID từ đây!)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/messages/test-users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "messages",
+            "test-users"
+          ]
+        },
+        "description": "Lấy danh sách user - Copy _id từ đây để dùng trong các request khác"
+      },
+      "response": []
+    },
+    {
+      "name": "1. POST - Send Text Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"from\": \"USER1_ID\",\n  \"to\": \"USER2_ID\",\n  \"type\": \"text\",\n  \"text\": \"Xin chào, đây là tin nhắn text\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/messages",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "messages"
+          ]
+        },
+        "description": "Gửi tin nhắn text - Thay USER1_ID (người gửi) và USER2_ID (người nhận) bằng id thực tế"
+      },
+      "response": []
+    },
+    {
+      "name": "2. POST - Send File Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"from\": \"USER1_ID\",\n  \"to\": \"USER2_ID\",\n  \"type\": \"file\",\n  \"text\": \"/uploads/document.pdf\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/v1/messages",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "messages"
+          ]
+        },
+        "description": "Gửi tin nhắn file - type='file' và text là đường dẫn file"
+      },
+      "response": []
+    },
+    {
+      "name": "3. GET - Last Messages (by userId)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/messages/USER_ID",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "messages",
+            "USER_ID"
+          ]
+        },
+        "description": "Lấy message cuối cùng của user - Thay USER_ID bằng id thực tế"
+      },
+      "response": []
+    },
+    {
+      "name": "4. GET - Full Conversation (between 2 users)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/messages/USER2_ID/USER1_ID",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "messages",
+            "USER2_ID",
+            "USER1_ID"
+          ]
+        },
+        "description": "Lấy toàn bộ message giữa USER1 và USER2 - Thay bằng id thực tế"
+      },
+      "response": []
+    },
+    {
+      "name": "5. DELETE - Delete Message",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/messages/MESSAGE_ID",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "messages",
+            "MESSAGE_ID"
+          ]
+        },
+        "description": "Xóa tin nhắn (soft delete) - Thay MESSAGE_ID bằng id thực tế"
+      },
+      "response": []
+    }
+  ]
+}
